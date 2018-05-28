@@ -1,14 +1,17 @@
 {
   "name": "xstream-store",
-  "version": "0.0.0",
+  "version": "0.0.0-semantically-released",
   "description": "A redux-like store for xstream",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "commit": "git-cz",
+    "test": "jest",
+    "semantic-release": "semantic-release",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fixate/xstream-store.git"
+    "url": "https://github.com/fixate/xstream-store.git"
   },
   "keywords": ["xstream"],
   "author": "Larry Botha",
@@ -18,6 +21,15 @@
   },
   "homepage": "https://github.com/fixate/xstream-store#readme",
   "devDependencies": {
+    "commitizen": "^2.10.1",
+    "cz-conventional-changelog": "^2.1.0",
+    "semantic-release": "^15.5.0",
+    "travis-deploy-once": "^5.0.0"
+  },
+  "peerDependencies": {
     "xstream": "^11.3.0"
+  },
+  "czConfig": {
+    "path": "node_modules/cz-conventional-changelog"
   }
 }
