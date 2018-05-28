@@ -14,7 +14,9 @@
     "type": "git",
     "url": "https://github.com/fixate/xstream-store.git"
   },
-  "keywords": ["xstream"],
+  "keywords": [
+    "xstream"
+  ],
   "author": "Larry Botha",
   "license": "MIT",
   "bugs": {
@@ -27,9 +29,11 @@
     "cz-conventional-changelog": "^2.1.0",
     "ghooks": "^2.0.4",
     "jest": "^23.0.1",
+    "prettier": "^1.13.0",
     "semantic-release": "^15.5.0",
-    "travis-deploy-once": "^5.0.0"
+    "travis-deploy-once": "^5.0.0",
     "ts-jest": "^22.4.6",
+    "typescript": "^2.8.3"
   },
   "peerDependencies": {
     "xstream": "^11.3.0"
