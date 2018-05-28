@@ -1,6 +1,10 @@
 const xs = require('xstream');
 
-function createStore(stateStreamCreators = {}, effectCreators = []) {
+const select = action$ => actionName => {
+  return actionName ? action$.filter(({type}) => type === actionName) : action$;
+};
+
+const createStore = (stateStreamCreators = {}, effectCreators = []) => {
   let dispatch;
 
   const action$ = xs.create({
@@ -9,10 +13,6 @@ function createStore(stateStreamCreators = {}, effectCreators = []) {
     },
     stop() {},
   });
-
-  const select = a$ => actionName => {
-    return actionName ? a$.filter(({type}) => type === actionName) : a$;
-  };
 
   const reducer$ = xs.merge(
     ...Object.keys(stateStreamCreators).map(scope => {
@@ -38,6 +38,6 @@ function createStore(stateStreamCreators = {}, effectCreators = []) {
   effectCreators.map(effect => effect(select(action$), dispatch));
 
   return {dispatch, state$};
-}
+};
 
 module.exports = createStore;
