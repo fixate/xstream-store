@@ -1,0 +1,23 @@
+{
+  "name": "xstream-store",
+  "version": "0.0.0",
+  "description": "A redux-like store for xstream",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fixate/xstream-store.git"
+  },
+  "keywords": ["xstream"],
+  "author": "Larry Botha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fixate/xstream-store/issues"
+  },
+  "homepage": "https://github.com/fixate/xstream-store#readme",
+  "devDependencies": {
+    "xstream": "^11.3.0"
+  }
+}
