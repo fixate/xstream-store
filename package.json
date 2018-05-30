@@ -36,7 +36,7 @@
     "typescript": "^2.8.3"
   },
   "peerDependencies": {
-    "xstream": "^11.3.0"
+    "xstream": "^11.4.0"
   },
   "czConfig": {
     "path": "node_modules/cz-conventional-changelog"
