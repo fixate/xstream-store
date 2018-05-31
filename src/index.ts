@@ -8,6 +8,10 @@ export interface Dispatch {
   (action: Action): void;
 }
 
+export interface StreamCreator {
+  (StreamSelector): Stream<any>;
+}
+
 export interface StreamSelector {
   (actionName: string): Stream<Action>;
 }
@@ -16,12 +20,19 @@ export interface EffectCreator {
   (actionStream: StreamSelector, fn: Dispatch): void;
 }
 
+export interface CreateStore {
+  (stateStreamCreators: object, effectCreators: EffectCreator[]): {
+    dispatch: Dispatch;
+    state$: Stream<object>;
+  };
+}
+
 const select = (action$: Stream<Action>) => {
   return (actionName: string): Stream<Action> =>
     actionName ? action$.filter(({type}) => type === actionName) : action$;
 };
 
-const createStore = (stateStreamCreators: object = {}, effectCreators: EffectCreator[] = []) => {
+const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = []) => {
   let dispatch: Dispatch;
 
   const action$: Stream<Action> = xs.create({
@@ -33,7 +44,7 @@ const createStore = (stateStreamCreators: object = {}, effectCreators: EffectCre
 
   const reducers$ = xs.merge(
     ...Object.keys(stateStreamCreators).map((scope: string) => {
-      const streamCreator = stateStreamCreators[scope];
+      const streamCreator: StreamCreator = stateStreamCreators[scope];
       const reducer$ = streamCreator(select(action$));
 
       return reducer$.map(reducer => [scope, reducer]);
