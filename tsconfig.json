@@ -4,7 +4,8 @@
     "allowJs": false,
     "target": "es5",
     "module": "commonjs",
-    "declaration": true
+    "declaration": true,
+    "outDir": "./"
   },
-  "include": ["./src/**/*"]
+  "files": ["./src/index.ts"]
 }

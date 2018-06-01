@@ -2,7 +2,7 @@
   "name": "xstream-store",
   "version": "0.0.0-semantically-released",
   "description": "A redux-like store for xstream",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "commit": "git-cz",
     "changelog": "conventional-changelog --infile CHANGELOG.md --same-file --release-count 0 --preset angular",
