@@ -12,6 +12,10 @@ export interface StreamCreator {
   (StreamSelector): Stream<any>;
 }
 
+export interface StreamCreators {
+  [key: string]: StreamCreator;
+}
+
 export interface StreamSelector {
   (actionName: string): Stream<Action>;
 }
@@ -32,7 +36,10 @@ const select = (action$: Stream<Action>) => {
     actionName ? action$.filter(({type}) => type === actionName) : action$;
 };
 
-const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = []) => {
+const createStore: CreateStore = (
+  stateStreamCreators: StreamCreators = {},
+  effectCreators = [],
+) => {
   let dispatch: Dispatch;
 
   const action$: Stream<Action> = xs.create({
