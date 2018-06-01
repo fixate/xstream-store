@@ -1,6 +1,8 @@
 import xs from 'xstream';
 import createStore, {Action, StreamCreators} from '../src/index';
 
+// node --inspect-brk ts-node/register src/index.ts
+
 const counterActions = {
   add: <Action>{type: 'add'},
 };
