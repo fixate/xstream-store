@@ -9,6 +9,8 @@ node_js:
   - '8'
   - '6'
   - '4'
+before_script:
+  - npm i xstream
 script:
   - npm run test
 after_success:
