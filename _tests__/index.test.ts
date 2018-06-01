@@ -1,16 +1,20 @@
 import xs from 'xstream';
-import createStore, {Action, StreamCreator} from '../src/index';
+import createStore, {Action, StreamCreators} from '../src/index';
 
 const counterActions = {
   add: <Action>{type: 'add'},
 };
 
-const counter$Creator: StreamCreator = select =>
-  select(counterActions.add)
-    .map(a => state => ({...state, value: state.value + 1}))
-    .startWith(() => ({value: 0}));
+const counterInitialState = {value: 0};
 
-const streamCreators = {
+const counter$Creator = select =>
+  select(counterActions.add.type)
+    .map(a => state => {
+      return {...state, value: state.value + 1};
+    })
+    .startWith(() => counterInitialState);
+
+const streamCreators: StreamCreators = {
   counter: counter$Creator,
 };
 
@@ -23,12 +27,12 @@ describe('store', () => {
     const {dispatch, state$} = store;
 
     state$.addListener({
-      next(state) {
-        expect(state).toBeTruthy();
+      next(state: {counter: object}) {
+        expect(state.counter).toBe(counterInitialState);
       },
     });
 
-    dispatch(counterActions.add);
+    // dispatch(counterActions.add);
   });
 
   test.skip('-> state stream is updated after reacting to broadcast event', () => {});
