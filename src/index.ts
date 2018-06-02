@@ -12,7 +12,7 @@ export interface StreamCreator {
   (StreamSelector): Stream<any>;
 }
 
-export interface StreamCreators {
+export interface StreamCreatorMap {
   [key: string]: StreamCreator;
 }
 
@@ -37,7 +37,7 @@ const select = (action$: Stream<Action>) => {
 };
 
 const createStore: CreateStore = (
-  stateStreamCreators: StreamCreators = {},
+  stateStreamCreators: StreamCreatorMap = {},
   effectCreators = [],
 ) => {
   let dispatch: Dispatch;
