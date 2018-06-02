@@ -2,6 +2,7 @@ import xs, {Stream} from 'xstream';
 
 export interface Action {
   type: string;
+  [key: string]: any;
 }
 
 export interface Dispatch {
