@@ -79,7 +79,7 @@ describe('store', () => {
     sub.unsubscribe();
   });
 
-  test.skip('-> different dispatched actions produce correct state', () => {
+  test('-> different dispatched actions produce correct state', () => {
     const {dispatch, state$} = getFreshStore();
 
     const sub = state$
@@ -87,8 +87,8 @@ describe('store', () => {
       .compose(buffer(xs.never()))
       .map(xs => xs.slice(-1)[0])
       .subscribe({
-        next(latestState) {
-          expect(latestState).toBe(11);
+	next(latestState: ICounterState) {
+	  expect(latestState.value).toBe(11);
         },
         error() {},
         complete() {},
