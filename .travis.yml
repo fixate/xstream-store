@@ -12,6 +12,7 @@ node_js:
 before_script:
   - npm i xstream
 script:
+  - npm run lint
   - npm run test
 after_success:
   - npm run travis-deploy-once "npm run semantic-release"
