@@ -61,7 +61,11 @@ const createStore: CreateStore = (
     .subscribe({next() {}, error() {}, complete() {}})
     .unsubscribe();
 
-  effectCreators.map(effect => effect(select(action$), dispatch));
+  effectCreators.map(effectCreator => {
+    const action$Selector: IStreamSelector = select(action$);
+
+    effectCreator(action$Selector, dispatch);
+  });
 
   return {dispatch, state$};
 };
