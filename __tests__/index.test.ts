@@ -36,8 +36,8 @@ const streamCreators: IStreamCreatorMap = {
   foo: foo$Creator,
 };
 
-const getFreshStore = (effectCreators: EffectCreator[] = []) =>
-  createStore(streamCreators, effectCreators);
+const getFreshStore = (streamCs = streamCreators, effectCs: IEffectCreator[] = []) =>
+  createStore(streamCs, effectCs);
 
 describe('store', () => {
   test('-> state stream emits initial state', () => {
