@@ -1,6 +1,6 @@
 import xs from 'xstream';
 import buffer from 'xstream/extra/buffer';
-import createStore, {Action, EffectCreator, StreamCreatorMap} from '../src/index';
+import createStore, {IAction, IEffectCreator, IStreamCreatorMap} from '../src/index';
 
 // node --inspect-brk ts-node/register src/index.ts
 
@@ -8,8 +8,8 @@ const addAction = 'add';
 const incrementAction = 'increment';
 
 const counterActions = {
-  [incrementAction]: <Action>{type: 'increment'},
-  [addAction]: (n: number): Action => ({type: 'add', value: n}),
+  [incrementAction]: <IAction>{type: 'increment'},
+  [addAction]: (n: number): IAction => ({type: 'add', value: n}),
 };
 
 interface ICounterState {
@@ -31,7 +31,7 @@ const counter$Creator = select =>
 
 const foo$Creator = select => xs.empty().startWith(() => {});
 
-const streamCreators: StreamCreatorMap = {
+const streamCreators: IStreamCreatorMap = {
   counter: counter$Creator,
   foo: foo$Creator,
 };
