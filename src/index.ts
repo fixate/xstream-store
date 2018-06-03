@@ -4,12 +4,13 @@ export interface IAction {
   type: string;
   [key: string]: any;
 }
+export type IActionStream = Stream<IAction>;
 
-export type IDispatch = (action: IAction) => void;
+export type IDispatch = (IAction) => void;
 export type IStreamCreator = (IStreamSelector) => Stream<any>;
-export type IStreamSelector = (actionName: string) => Stream<IAction>;
-export type IStreamSelect = (actionStream: Stream<IAction>) => IStreamSelector;
-export type IEffectCreator = (actionStream: IStreamSelector, fn: IDispatch) => void;
+export type IStreamSelector = (actionType: string) => IActionStream;
+export type IStreamSelect = (IActionStream) => IStreamSelector;
+export type IEffectCreator = (IActionStream, IDispatch) => void;
 
 export interface IStreamCreatorMap {
   [key: string]: IStreamCreator;
@@ -32,7 +33,7 @@ const createStore: CreateStore = (
 ) => {
   let dispatch: IDispatch;
 
-  const action$: Stream<IAction> = xs.create({
+  const action$: IActionStream = xs.create({
     start(listener) {
       dispatch = action => listener.next(action);
     },
