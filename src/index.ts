@@ -1,58 +1,48 @@
 import xs, {Stream} from 'xstream';
 
-export interface Action {
+export interface IAction {
   type: string;
   [key: string]: any;
 }
 
-export interface Dispatch {
-  (action: Action): void;
+export type IDispatch = (action: IAction) => void;
+export type IStreamCreator = (IStreamSelector) => Stream<any>;
+export type IStreamSelector = (actionName: string) => Stream<IAction>;
+export type IStreamSelect = (actionStream: Stream<IAction>) => IStreamSelector;
+export type IEffectCreator = (actionStream: IStreamSelector, fn: IDispatch) => void;
+
+export interface IStreamCreatorMap {
+  [key: string]: IStreamCreator;
 }
 
-export interface StreamCreator {
-  (StreamSelector): Stream<any>;
-}
-
-export interface StreamCreatorMap {
-  [key: string]: StreamCreator;
-}
-
-export interface StreamSelector {
-  (actionName: string): Stream<Action>;
-}
-
-export interface EffectCreator {
-  (actionStream: StreamSelector, fn: Dispatch): void;
-}
-
-export interface CreateStore {
-  (stateStreamCreators: object, effectCreators: EffectCreator[]): {
-    dispatch: Dispatch;
-    state$: Stream<object>;
-  };
-}
-
-const select = (action$: Stream<Action>) => {
-  return (actionName: string): Stream<Action> =>
-    actionName ? action$.filter(({type}) => type === actionName) : action$;
+export type CreateStore = (
+  stateStreamCreators: object,
+  effectCreators: IEffectCreator[],
+) => {
+  dispatch: IDispatch;
+  state$: Stream<object>;
 };
 
+const select: IStreamSelect = action$ => actionName =>
+  actionName ? action$.filter(({type}) => type === actionName) : action$;
+
 const createStore: CreateStore = (
-  stateStreamCreators: StreamCreatorMap = {},
+  stateStreamCreators: IStreamCreatorMap = {},
   effectCreators = [],
 ) => {
-  let dispatch: Dispatch;
+  let dispatch: IDispatch;
 
-  const action$: Stream<Action> = xs.create({
+  const action$: Stream<IAction> = xs.create({
     start(listener) {
       dispatch = action => listener.next(action);
     },
+    // tslint:disable-next-line: no-empty
     stop() {},
   });
 
   const reducers$ = xs.merge(
     ...Object.keys(stateStreamCreators).map((scope: string) => {
-      const streamCreator: StreamCreator = stateStreamCreators[scope];
+      const streamCreator: IStreamCreator = stateStreamCreators[scope];
       const reducer$ = streamCreator(select(action$));
 
       return reducer$.map(reducer => [scope, reducer]);
@@ -67,6 +57,7 @@ const createStore: CreateStore = (
   }, {});
 
   xs.merge(action$, state$)
+    // tslint:disable-next-line: no-empty
     .subscribe({next() {}, error() {}, complete() {}})
     .unsubscribe();
 
