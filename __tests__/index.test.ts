@@ -87,8 +87,8 @@ describe('store', () => {
       .compose(buffer(xs.never()))
       .map(xs => xs.slice(-1)[0])
       .subscribe({
-	next(latestState: ICounterState) {
-	  expect(latestState.value).toBe(11);
+        next(latestState: ICounterState) {
+          expect(latestState.value).toBe(11);
         },
         error() {},
         complete() {},
@@ -102,7 +102,27 @@ describe('store', () => {
     sub.unsubscribe();
   });
 
-  test.skip('-> action stream receives broadcast events', () => {});
+  test.skip('-> side effects receive dispatched actions', () => {
+    const actionToDispatch = addAction;
+    const spy = jest.fn();
+    const sideEffectCreator: IEffectCreator = select => {
+      const action$ = select();
 
-  test.skip('-> side effects receive broadcast events', () => {});
+      const subs = action$.subscribe({
+        next(action) {
+          spy();
+          expect(action.type === actionToDispatch);
+        },
+        complete() {
+          expect(spy).toHaveBeenCalled();
+        },
+      });
+
+      action$.shamefullySendComplete();
+    };
+    const effectCreators: IEffectCreator[] = [sideEffectCreator];
+    const {dispatch} = createStore(streamCreators, effectCreators);
+
+    dispatch(actionToDispatch);
+  });
 });
