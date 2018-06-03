@@ -4,13 +4,14 @@
   "description": "A redux-like store for xstream",
   "main": "index.js",
   "scripts": {
-    "commit": "git-cz",
     "changelog": "conventional-changelog --infile CHANGELOG.md --same-file --release-count 0 --preset angular",
+    "commit": "git-cz",
     "lint": "tslint src/**/*.ts -t verbose -t stylish",
     "watch:lint": "chokidar src/**/*.ts -c \"npm run lint\" --initial",
+    "postinstall": "npm i --no-save xstream",
+    "semantic-release": "semantic-release",
     "test": "jest",
     "watch:test": "jest --watch",
-    "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once"
   },
   "repository": {
