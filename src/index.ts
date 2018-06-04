@@ -6,11 +6,11 @@ export interface IAction {
 }
 export type IActionStream = Stream<IAction>;
 
-export type IDispatch = (IAction) => void;
-export type IStreamCreator = (IStreamSelector) => Stream<any>;
+export type IDispatch = (a: IAction) => void;
 export type IStreamSelector = (actionType: string) => IActionStream;
-export type IStreamSelect = (IActionStream) => IStreamSelector;
-export type IEffectCreator = (IActionStream, IDispatch) => void;
+export type IStreamCreator = (ss: IStreamSelector) => Stream<any>;
+export type IStreamSelect = (a$: IActionStream) => IStreamSelector;
+export type IEffectCreator = (a$: IActionStream, d: IDispatch) => void;
 
 export interface IStreamCreatorMap {
   [key: string]: IStreamCreator;
