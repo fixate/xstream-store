@@ -6,11 +6,15 @@ export interface IAction {
 }
 export type IActionStream = Stream<IAction>;
 
+export interface IScopedState {
+  [key: string]: object;
+}
+
 export type IDispatch = (a: IAction) => void;
-export type IStreamSelector = (actionType: string) => IActionStream;
-export type IStreamCreator = (ss: IStreamSelector) => Stream<any>;
-export type IStreamSelect = (a$: IActionStream) => IStreamSelector;
-export type IEffectCreator = (a$: IActionStream, d: IDispatch) => void;
+export type IActionStreamSelector = (actionType: string) => IActionStream;
+export type IStreamCreator = (a$s: IActionStreamSelector) => Stream<any>;
+export type IActionStreamSelectorCreator = (a$: IActionStream) => IActionStreamSelector;
+export type IEffectCreator = (a$s: IActionStreamSelector, d: IDispatch) => void;
 
 export interface IStreamCreatorMap {
   [key: string]: IStreamCreator;
@@ -24,8 +28,8 @@ export type CreateStore = (
   state$: Stream<object>;
 };
 
-const select: IStreamSelect = action$ => actionName =>
-  actionName ? action$.filter(({type}) => type === actionName) : action$;
+const selectAction$ByType: IActionStreamSelectorCreator = action$ => actionType =>
+  actionType ? action$.filter(({type}) => type === actionType) : action$;
 
 const createStore: CreateStore = (
   stateStreamCreators: IStreamCreatorMap = {},
@@ -44,16 +48,18 @@ const createStore: CreateStore = (
   const reducers$ = xs.merge(
     ...Object.keys(stateStreamCreators).map((scope: string) => {
       const streamCreator: IStreamCreator = stateStreamCreators[scope];
-      const reducer$ = streamCreator(select(action$));
+      const reducer$ = streamCreator(selectAction$ByType(action$));
 
       return reducer$.map(reducer => [scope, reducer]);
     }),
   );
 
-  const state$: Stream<object> = reducers$.fold((state, [scope, reducer]) => {
+  const state$: Stream<IScopedState> = reducers$.fold((state, [scope, reducer]) => {
+    const scopedState = (state as IScopedState)[scope];
+
     return {
       ...state,
-      [scope]: reducer(state[scope]),
+      [scope]: reducer(scopedState),
     };
   }, {});
 
@@ -63,7 +69,7 @@ const createStore: CreateStore = (
     .unsubscribe();
 
   effectCreators.map(effectCreator => {
-    const action$Selector: IStreamSelector = select(action$);
+    const action$Selector: IActionStreamSelector = selectAction$ByType(action$);
 
     effectCreator(action$Selector, dispatch);
   });
