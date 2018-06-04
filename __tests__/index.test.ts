@@ -105,7 +105,7 @@ describe('store', () => {
   test('-> side effects receive dispatched actions', () => {
     let action$;
     let subscription;
-    const actionToDispatch = addAction;
+    const actionToDispatch = counterActions.add(1);
     const spy = jest.fn();
     const sideEffectCreator = select => {
       action$ = select();
@@ -113,7 +113,7 @@ describe('store', () => {
       subscription = action$.compose(buffer(xs.never())).subscribe({
         next([action]) {
           spy();
-          expect(action.type === actionToDispatch);
+          expect(action).toBe(actionToDispatch);
 
           action$.shamefullySendComplete();
         },
@@ -127,5 +127,33 @@ describe('store', () => {
 
     dispatch(actionToDispatch);
     action$.shamefullySendComplete();
+  });
+
+  test('-> side effects can dispatch actions', () => {
+    const sideEffectCreator = (select, dispatch) => {
+      const addAction$ = select(addAction);
+
+      addAction$.subscribe({
+        next() {
+          dispatch(counterActions.increment);
+        },
+      });
+    };
+    const effectCreators = [sideEffectCreator];
+    const {dispatch, state$} = createStore(streamCreators, effectCreators);
+
+    state$
+      .map(({counter}: {counter: object}) => counter)
+      .compose(buffer(xs.never()))
+      .addListener({
+        next(states: ICounterState[]) {
+          const lastState = states.slice(-1)[0];
+
+          expect(lastState.value).toBe(11);
+        },
+      });
+
+    dispatch(counterActions.add(10));
+    state$.shamefullySendComplete();
   });
 });
