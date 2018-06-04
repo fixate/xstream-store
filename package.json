@@ -12,7 +12,6 @@
     "postdist": "uglifyjs dist/xstream-store.js -o dist/xstream-store.min.js",
     "lint": "tslint src/**/*.ts -t verbose -t stylish",
     "watch:lint": "chokidar src/**/*.ts -c \"npm run lint\" --initial",
-    "postinstall": "npm i --no-save xstream",
     "semantic-release": "semantic-release",
     "test": "jest",
     "watch:test": "jest --watch",

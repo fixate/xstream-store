@@ -9,6 +9,7 @@ node_js:
   - '8'
   - '6'
 script:
+  - npm i --no-save xstream
   - npm run lint
   - npm run test
   - npm run dist
