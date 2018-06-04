@@ -102,27 +102,30 @@ describe('store', () => {
     sub.unsubscribe();
   });
 
-  test.skip('-> side effects receive dispatched actions', () => {
+  test('-> side effects receive dispatched actions', () => {
+    let action$;
+    let subscription;
     const actionToDispatch = addAction;
     const spy = jest.fn();
-    const sideEffectCreator: IEffectCreator = select => {
-      const action$ = select();
+    const sideEffectCreator = select => {
+      action$ = select();
 
-      const subs = action$.subscribe({
-        next(action) {
+      subscription = action$.compose(buffer(xs.never())).subscribe({
+        next([action]) {
           spy();
           expect(action.type === actionToDispatch);
+
+          action$.shamefullySendComplete();
         },
         complete() {
           expect(spy).toHaveBeenCalled();
         },
       });
-
-      action$.shamefullySendComplete();
     };
-    const effectCreators: IEffectCreator[] = [sideEffectCreator];
+    const effectCreators = [sideEffectCreator];
     const {dispatch} = createStore(streamCreators, effectCreators);
 
     dispatch(actionToDispatch);
+    action$.shamefullySendComplete();
   });
 });
