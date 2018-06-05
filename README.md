@@ -113,7 +113,7 @@ store.state$.addListener({
   next(state) { console.log(`entire state: ${state}`) },
 });
 
-const counterState = state$
+const counterState = store.state$
                       .map(({counter}) => counter)
                       .addListener({
                         next(counterState) {
