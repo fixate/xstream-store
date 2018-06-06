@@ -21,7 +21,7 @@ export interface IStreamCreatorMap {
 }
 
 export type CreateStore = (
-  stateStreamCreators: object,
+  stateStreamCreators: IStreamCreatorMap,
   effectCreators: IEffectCreator[],
 ) => {
   dispatch: IDispatch;
@@ -31,10 +31,7 @@ export type CreateStore = (
 const selectAction$ByType: IActionStreamSelectorCreator = action$ => actionType =>
   actionType ? action$.filter(({type}) => type === actionType) : action$;
 
-const createStore: CreateStore = (
-  stateStreamCreators: IStreamCreatorMap = {},
-  effectCreators = [],
-) => {
+const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = []) => {
   let dispatch: IDispatch;
 
   const action$: IActionStream = xs.create({
