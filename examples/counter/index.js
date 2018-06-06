@@ -1,5 +1,5 @@
-const createStore = require('../src/index').default;
-const {counter$Creator, counterEffectsCreator, add, increment} = require('./counter');
+const createStore = require('../../src/index').default;
+const {counter$Creator, counterEffectsCreator, add, increment} = require('./state');
 
 const streamCreators = {counter: counter$Creator};
 const effectCreators = [counterEffectsCreator];
