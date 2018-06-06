@@ -16,6 +16,14 @@ as `redux-thunk`.
 $ npm i xstream-store xstream
 ```
 
+## Example
+
+View the source in `examples/`:
+
+```bash
+$ node examples/counter
+```
+
 ## Usage
 
 ```javascript
