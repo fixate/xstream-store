@@ -13,7 +13,7 @@
     "lint": "tslint src/**/*.ts -t verbose -t stylish",
     "watch:lint": "chokidar src/**/*.ts -c \"npm run lint\" --initial",
     "semantic-release": "semantic-release",
-    "test": "jest",
+    "test": "jest --coverage",
     "watch:test": "jest --watch",
     "travis-deploy-once": "travis-deploy-once"
   },
