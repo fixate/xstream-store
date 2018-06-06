@@ -8,7 +8,7 @@ A redux-like store module for xstream inspired by redux.
 
 Take the pain out of handling side-effects with the power of observables. Eliminate
 the need for use of middleware such as `redux-thunk`, and side-effect handlers such
-as `redux-thunk`.
+as `redux-saga`.
 
 ## Install
 
