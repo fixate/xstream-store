@@ -22,7 +22,8 @@
     "url": "https://github.com/fixate/xstream-store.git"
   },
   "keywords": [
-    "xstream"
+    "xstream",
+    "redux"
   ],
   "author": "Larry Botha",
   "license": "MIT",
