@@ -1,6 +1,6 @@
 import xs from 'xstream';
-import buffer from 'xstream/extra/buffer';
 import createStore, {IAction, IEffectCreator, IStreamCreatorMap} from '../src/index';
+import buffer from 'xstream/extra/buffer';
 
 // node --inspect-brk ts-node/register src/index.ts
 
@@ -40,6 +40,14 @@ const getFreshStore = (streamCs = streamCreators, effectCs: IEffectCreator[] = [
   createStore(streamCs, effectCs);
 
 describe('store', () => {
+  test('-> accepts no paramaeters', () => {
+    const obj = {createStore};
+    const spy = jest.spyOn(obj, 'createStore');
+    const store = obj.createStore(undefined, undefined);
+
+    expect(spy).not.toThrowError();
+  });
+
   test('-> state stream emits initial state', () => {
     const {state$} = getFreshStore();
 
