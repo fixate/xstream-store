@@ -164,4 +164,11 @@ describe('store', () => {
     dispatch(counterActions.add(10));
     state$.shamefullySendComplete();
   });
+
+  test("-> throws when reducer stream doesn't start with a function", () => {
+    const whoops$Creator = _ =>
+      xs.empty().startWith({whoops: 'started with an object instead of function'});
+
+    expect(() => createStore({whoops: whoops$Creator}, [])).toThrowError(TypeError);
+  });
 });

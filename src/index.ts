@@ -47,13 +47,21 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
       const streamCreator: IStreamCreator = stateStreamCreators[scope];
       const reducer$ = streamCreator(selectAction$ByType(action$));
 
-      return reducer$.map(reducer => [scope, reducer]);
+      return reducer$.map(reducer => {
+        if (typeof reducer !== 'function') {
+          throw new TypeError(
+            `stream creator at '${scope}' didn't emit a reducer function,
+            got ${JSON.stringify(reducer)} instead`,
+          );
+        }
+
+        return [scope, reducer];
+      });
     }),
   );
 
   const state$: Stream<IScopedState> = reducers$.fold((state, [scope, reducer]) => {
     const scopedState = (state as IScopedState)[scope];
-
     return {
       ...state,
       [scope]: reducer(scopedState),
@@ -61,8 +69,15 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
   }, {});
 
   xs.merge(action$, state$)
-    // tslint:disable-next-line: no-empty
-    .subscribe({next() {}, error() {}, complete() {}})
+    .subscribe({
+      // tslint:disable-next-line: no-empty
+      next() {},
+      error(e) {
+        throw e;
+      },
+      // tslint:disable-next-line: no-empty
+      complete() {},
+    })
     .unsubscribe();
 
   effectCreators.map(effectCreator => {
