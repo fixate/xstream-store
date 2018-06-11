@@ -48,6 +48,12 @@ describe('store', () => {
     expect(spy).not.toThrowError();
   });
 
+  test('-> exports with initial state before any subscriptions', () => {
+    const {initialState} = getFreshStore();
+
+    expect(initialState).toHaveProperty('counter', counterInitialState);
+  });
+
   test('-> state stream emits initial state', () => {
     const {state$} = getFreshStore();
 
