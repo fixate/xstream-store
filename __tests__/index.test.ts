@@ -27,7 +27,7 @@ const counter$Creator = select =>
         value: state.value + action.value,
       })),
     )
-    .startWith(() => counterInitialState);
+    .startWith(counterInitialState);
 
 const foo$Creator = select => xs.empty().startWith(() => {});
 
