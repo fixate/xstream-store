@@ -26,6 +26,7 @@ export type CreateStore = (
 ) => {
   dispatch: IDispatch;
   state$: Stream<object>;
+  initialState: IScopedState;
 };
 
 const selectAction$ByType: IActionStreamSelectorCreator = action$ => actionType =>
@@ -33,6 +34,7 @@ const selectAction$ByType: IActionStreamSelectorCreator = action$ => actionType 
 
 const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = []) => {
   let dispatch: IDispatch;
+  let initialState: IScopedState;
 
   const action$: IActionStream = xs.create({
     start(listener) {
@@ -48,7 +50,7 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
       const reducer$ = streamCreator(selectAction$ByType(action$));
 
       return reducer$.map(reducerOrInitialState => {
-	return [scope, reducerOrInitialState];
+        return [scope, reducerOrInitialState];
       });
     }),
   );
@@ -56,8 +58,8 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
   const state$: Stream<IScopedState> = reducers$.fold((state, [scope, reducerOrInitialState]) => {
     const scopedState =
       typeof reducerOrInitialState === 'function'
-	? reducerOrInitialState((state as IScopedState)[scope])
-	: reducerOrInitialState;
+        ? reducerOrInitialState((state as IScopedState)[scope])
+        : reducerOrInitialState;
 
     return {
       ...state,
@@ -68,7 +70,9 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
   xs.merge(action$, state$)
     .subscribe({
       // tslint:disable-next-line: no-empty
-      next() {},
+      next(state) {
+        initialState = state;
+      },
       error(e) {
         throw e;
       },
@@ -83,7 +87,7 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
     effectCreator(action$Selector, dispatch);
   });
 
-  return {dispatch, state$};
+  return {dispatch, state$, initialState};
 };
 
 export default createStore;
