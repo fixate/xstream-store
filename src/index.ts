@@ -7,14 +7,18 @@ export interface IAction {
 export type IActionStream = Stream<IAction>;
 
 export interface IScopedState {
-  [key: string]: object;
+  [key: string]: any;
 }
 
 export type IDispatch = (a: IAction) => void;
 export type IActionStreamSelector = (actionType: string) => IActionStream;
 export type IStreamCreator = (a$s: IActionStreamSelector) => Stream<any>;
-export type IActionStreamSelectorCreator = (a$: IActionStream) => IActionStreamSelector;
 export type IEffectCreator = (a$s: IActionStreamSelector, d: IDispatch) => void;
+
+export type IActionStreamSelectorCreator = (a$: IActionStream) => IActionStreamSelector;
+
+const selectAction$ByType: IActionStreamSelectorCreator = action$ => actionType =>
+  actionType ? action$.filter(({type}) => type === actionType) : action$;
 
 export interface IStreamCreatorMap {
   [key: string]: IStreamCreator;
@@ -25,12 +29,9 @@ export type CreateStore = (
   effectCreators: IEffectCreator[],
 ) => {
   dispatch: IDispatch;
-  state$: Stream<object>;
+  state$: Stream<IScopedState>;
   initialState: IScopedState;
 };
-
-const selectAction$ByType: IActionStreamSelectorCreator = action$ => actionType =>
-  actionType ? action$.filter(({type}) => type === actionType) : action$;
 
 const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = []) => {
   let dispatch: IDispatch;
@@ -49,9 +50,7 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
       const streamCreator: IStreamCreator = stateStreamCreators[scope];
       const reducer$ = streamCreator(selectAction$ByType(action$));
 
-      return reducer$.map(reducerOrInitialState => {
-        return [scope, reducerOrInitialState];
-      });
+      return reducer$.map(reducerOrInitialState => [scope, reducerOrInitialState]);
     }),
   );
 
