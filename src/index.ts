@@ -69,7 +69,6 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
 
   xs.merge(action$, state$)
     .subscribe({
-      // tslint:disable-next-line: no-empty
       next(state) {
         initialState = state;
       },
