@@ -47,24 +47,21 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
       const streamCreator: IStreamCreator = stateStreamCreators[scope];
       const reducer$ = streamCreator(selectAction$ByType(action$));
 
-      return reducer$.map(reducer => {
-        if (typeof reducer !== 'function') {
-          throw new TypeError(
-            `stream creator at '${scope}' didn't emit a reducer function,
-            got ${JSON.stringify(reducer)} instead`,
-          );
-        }
-
-        return [scope, reducer];
+      return reducer$.map(reducerOrInitialState => {
+	return [scope, reducerOrInitialState];
       });
     }),
   );
 
-  const state$: Stream<IScopedState> = reducers$.fold((state, [scope, reducer]) => {
-    const scopedState = (state as IScopedState)[scope];
+  const state$: Stream<IScopedState> = reducers$.fold((state, [scope, reducerOrInitialState]) => {
+    const scopedState =
+      typeof reducerOrInitialState === 'function'
+	? reducerOrInitialState((state as IScopedState)[scope])
+	: reducerOrInitialState;
+
     return {
       ...state,
-      [scope]: reducer(scopedState),
+      [scope]: scopedState,
     };
   }, {});
 
