@@ -11,7 +11,7 @@ export interface IScopedState {
 }
 
 export type IDispatch = (a: IAction) => void;
-export type IActionStreamSelector = (actionType: string) => IActionStream;
+export type IActionStreamSelector = (actionType?: string) => IActionStream;
 export type IStreamCreator = (a$s: IActionStreamSelector) => Stream<any>;
 export type IEffectCreator = (a$s: IActionStreamSelector, d: IDispatch) => void;
 
