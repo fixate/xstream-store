@@ -37,7 +37,7 @@
     "browserify": "^16.2.2",
     "chokidar": "^2.0.3",
     "chokidar-cli": "^1.2.0",
-    "codecov.io": "^0.1.6",
+    "codecov": "^3.0.2",
     "commitizen": "^2.10.1",
     "conventional-changelog": "^2.0.0",
     "conventional-changelog-cli": "^2.0.0",
