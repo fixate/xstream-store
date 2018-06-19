@@ -14,6 +14,7 @@ script:
   - npm run dist
 after_success:
   - npm run travis-deploy-once "npm run semantic-release"
+  - npm run report-coverage
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/

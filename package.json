@@ -15,7 +15,8 @@
     "semantic-release": "semantic-release",
     "test": "jest --coverage",
     "watch:test": "jest --watch",
-    "travis-deploy-once": "travis-deploy-once"
+    "travis-deploy-once": "travis-deploy-once",
+    "report-coverage": "cat ./coverage/lcov.info | codecov.io"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "browserify": "^16.2.2",
     "chokidar": "^2.0.3",
     "chokidar-cli": "^1.2.0",
+    "codecov.io": "^0.1.6",
     "commitizen": "^2.10.1",
     "conventional-changelog": "^2.0.0",
     "conventional-changelog-cli": "^2.0.0",
