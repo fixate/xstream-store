@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/fixate/xstream-store.svg?branch=master)](https://travis-ci.org/fixate/xstream-store)
 [![npm version](https://badge.fury.io/js/xstream-store.svg)](https://badge.fury.io/js/xstream-store)
+[![codecov](https://codecov.io/gh/fixate/xstream-store/branch/master/graph/badge.svg)](https://codecov.io/gh/fixate/xstream-store)
 
 
 A redux-like store module for xstream inspired by redux.
