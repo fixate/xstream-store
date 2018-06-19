@@ -16,7 +16,7 @@
     "test": "jest --coverage",
     "watch:test": "jest --watch",
     "travis-deploy-once": "travis-deploy-once",
-    "report-coverage": "cat ./coverage/lcov.info | codecov.io"
+    "report-coverage": "cat ./coverage/lcov.info | codecov"
   },
   "repository": {
     "type": "git",
