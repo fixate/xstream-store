@@ -15,6 +15,7 @@
     "semantic-release": "semantic-release",
     "test": "jest --coverage",
     "watch:test": "jest --watch",
+    "watch:test:debug": "node --inspect $(npm bin)/jest --watch",
     "travis-deploy-once": "travis-deploy-once",
     "report-coverage": "cat ./coverage/lcov.info | codecov"
   },
