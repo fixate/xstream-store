@@ -26,7 +26,7 @@ export interface IStreamCreatorMap {
 
 export type CreateStore = (
   stateStreamCreators: IStreamCreatorMap,
-  effectCreators: IEffectCreator[],
+  effectCreators?: IEffectCreator[],
 ) => {
   dispatch: IDispatch;
   state$: Stream<IScopedState>;
