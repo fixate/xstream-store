@@ -24,6 +24,4 @@ typings
 tsconfig.json
 tslint.json
 typings.json
-EXTRA_DOCS.md
-CONTRIBUTING.md
 browser-tests.html
