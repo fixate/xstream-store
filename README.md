@@ -152,7 +152,7 @@ store.dispatch(add1Action);
 
 ###
 
-## Related Projects
+## Related Libraries
 
 - [xstream-store-resource](https://github.com/fixate/xstream-store-resource) - easily generate streams for asynchronous requests
 - [react-xstream-store](https://github.com/fixate/react-xstream-store) - connect React components to an xstream store
