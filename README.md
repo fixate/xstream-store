@@ -140,9 +140,61 @@ store.dispatch(add1Action);
 // counter state: { value: 2 }
 ```
 
-### `state$`
+### `createStore`
 
-### `dispatch`
+`xstream-store` exports a single function, `createStore`. `createStore` returns an object containing the initial state of the store, a stream of the current state, and a dispatch function for updating values in the store
+
+```javascript
+const streamCreatorMap = {
+  counter: myCounterStreamCeator
+};
+
+const effectCreators = [
+  myCounterEffectCreator
+];
+
+const {dispatch, state$, initialState} = createStore(streamCreatorMap, effectCreators);
+```
+
+| Parameter        | Type                              | Required | Description                                                                                                                                                                                                                                    |
+|------------------|-----------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| streamCreatorMap | obj: {   [name]: streamCreator, } | true     | An object mapping each streamCreator to a key on the store                                                                                                                                                                                     |
+| effectCreators   | [effectCreator]                   | false    | An array of effect creators. `xstream-store` will map over each effect creator, passing in a `select` function for filtering actions within the effect creator, and a `dispatch` action for dispatching actions from within the effect creator |
+
+#### `state$`
+
+The state stream returned by `createStore`. Create subscribers to `state$` to respond to changes to state:
+
+```javascript
+state$.map(({counter}) => counter)
+      .subscribe({
+        next(counter) {
+          // do something with latest counter value
+        }
+      });
+```
+
+#### `dispatch`
+
+Dispatch actions to update the state of your store:
+
+```javascript
+const incrementAction = {type: 'increment'}
+const addActionCreator = n => ({
+  type: 'add',
+  value: n,
+});
+
+// increment counter value
+dispatch(incrementAction);
+
+// add 5 to counter value
+dispatch(addActionCreator(5))
+```
+
+#### `initialState`
+
+The initial state of the entire store, as defined by the initial state of each stream creator.
 
 ### Actions
 
