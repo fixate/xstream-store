@@ -200,7 +200,13 @@ The initial state of the entire store, as defined by the initial state of each s
 
 ### Stream Creator
 
+#### `select`
+
 ### Effects Creator
+
+#### `select`
+
+#### `dispatch`
 
 ###
 
