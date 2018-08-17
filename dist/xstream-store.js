@@ -10,16 +10,17 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var xstream_1 = require("xstream");
-var select = function (action$) { return function (actionName) {
-    return actionName ? action$.filter(function (_a) {
+var selectAction$ByType = function (action$) { return function (actionType) {
+    return actionType ? action$.filter(function (_a) {
         var type = _a.type;
-        return type === actionName;
+        return type === actionType;
     }) : action$;
 }; };
-var createStore = function (stateStreamCreators, effectCreators) {
-    if (stateStreamCreators === void 0) { stateStreamCreators = {}; }
+var createStore = function (streamCreatorMap, effectCreators) {
+    if (streamCreatorMap === void 0) { streamCreatorMap = {}; }
     if (effectCreators === void 0) { effectCreators = []; }
     var dispatch;
+    var initialState;
     var action$ = xstream_1.default.create({
         start: function (listener) {
             dispatch = function (action) { return listener.next(action); };
@@ -27,27 +28,44 @@ var createStore = function (stateStreamCreators, effectCreators) {
         // tslint:disable-next-line: no-empty
         stop: function () { },
     });
-    var reducers$ = xstream_1.default.merge.apply(xstream_1.default, Object.keys(stateStreamCreators).map(function (scope) {
-        var streamCreator = stateStreamCreators[scope];
-        var reducer$ = streamCreator(select(action$));
-        return reducer$.map(function (reducer) { return [scope, reducer]; });
+    var reducers$ = xstream_1.default.merge.apply(xstream_1.default, Object.keys(streamCreatorMap).map(function (scopeName) {
+        var streamCreator = streamCreatorMap[scopeName];
+        var reducer$ = streamCreator(selectAction$ByType(action$));
+        return reducer$.map(function (reducerOrInitialState) { return [scopeName, reducerOrInitialState]; });
     }));
     var state$ = reducers$.fold(function (state, _a) {
-        var scope = _a[0], reducer = _a[1];
-        return __assign({}, state, (_b = {}, _b[scope] = reducer(state[scope]), _b));
+        var scopeName = _a[0], reducerOrInitialState = _a[1];
+        var scopedState = typeof reducerOrInitialState === 'function'
+            ? reducerOrInitialState(state[scopeName])
+            : reducerOrInitialState;
+        return __assign({}, state, (_b = {}, _b[scopeName] = scopedState, _b));
         var _b;
     }, {});
     xstream_1.default.merge(action$, state$)
+        .subscribe({
+        next: function (state) {
+            initialState = state;
+        },
+        error: function (e) {
+            throw e;
+        },
         // tslint:disable-next-line: no-empty
-        .subscribe({ next: function () { }, error: function () { }, complete: function () { } })
+        complete: function () { },
+    })
         .unsubscribe();
     effectCreators.map(function (effectCreator) {
-        var action$Selector = select(action$);
+        var action$Selector = selectAction$ByType(action$);
         effectCreator(action$Selector, dispatch);
     });
-    return { dispatch: dispatch, state$: state$ };
+    return { dispatch: dispatch, state$: state$, initialState: initialState };
 };
 exports.default = createStore;
 
-},{"xstream":"xstream"}]},{},[1])(1)
+},{"xstream":"xstream"}],2:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var create_store_1 = require("./create-store");
+exports.default = create_store_1.default;
+
+},{"./create-store":1}]},{},[2])(2)
 });
