@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "allowJs": false,
-    "target": "es5",
-    "module": "commonjs",
     "declaration": true,
+    "module": "commonjs",
     "noImplicitAny": true,
-    "outDir": "./"
+    "outDir": "./",
+    "sourceMap": true,
+    "target": "es5"
   },
   "files": ["./src/index.ts"]
 }
