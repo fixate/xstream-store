@@ -9,6 +9,7 @@ import {
   Dispatch,
   EffectCreator,
   ScopedState,
+  ScopeName,
   StreamCreator,
   StreamCreatorMap,
 } from './types';
@@ -16,7 +17,10 @@ import {
 const selectAction$ByType: ActionStreamSelectorCreator = action$ => actionType =>
   actionType ? action$.filter(({type}) => type === actionType) : action$;
 
-const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = []) => {
+const createStore: CreateStore = (
+  streamCreatorMap: StreamCreatorMap = {},
+  effectCreators: EffectCreator[] = [],
+) => {
   let dispatch: Dispatch;
   let initialState: ScopedState;
 
@@ -29,23 +33,23 @@ const createStore: CreateStore = (stateStreamCreators = {}, effectCreators = [])
   });
 
   const reducers$ = xs.merge(
-    ...Object.keys(stateStreamCreators).map((scope: string) => {
-      const streamCreator: StreamCreator = stateStreamCreators[scope];
+    ...Object.keys(streamCreatorMap).map((scopeName: ScopeName) => {
+      const streamCreator: StreamCreator = streamCreatorMap[scopeName];
       const reducer$ = streamCreator(selectAction$ByType(action$));
 
-      return reducer$.map(reducerOrInitialState => [scope, reducerOrInitialState]);
+      return reducer$.map(reducerOrInitialState => [scopeName, reducerOrInitialState]);
     }),
   );
 
-  const state$: Stream<ScopedState> = reducers$.fold((state, [scope, reducerOrInitialState]) => {
+  const state$: Stream<any> = reducers$.fold((state, [scopeName, reducerOrInitialState]) => {
     const scopedState =
       typeof reducerOrInitialState === 'function'
-        ? reducerOrInitialState((state as ScopedState)[scope])
+        ? reducerOrInitialState((state as ScopedState)[scopeName])
         : reducerOrInitialState;
 
     return {
       ...state,
-      [scope]: scopedState,
+      [scopeName]: scopedState,
     };
   }, {});
 

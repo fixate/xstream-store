@@ -1,6 +1,7 @@
 import {Stream} from 'xstream';
 
 export type ActionType = string;
+export type ScopeName = string;
 
 export interface Action {
   type: ActionType;
@@ -23,11 +24,13 @@ export interface StreamCreatorMap {
   [key: string]: StreamCreator;
 }
 
-export type CreateStore = (
+export interface Store<S> {
+  dispatch: Dispatch;
+  state$: Stream<S>;
+  initialState: S;
+}
+
+export type CreateStore<S = {}> = (
   stateStreamCreators: StreamCreatorMap,
   effectCreators?: EffectCreator[],
-) => {
-  dispatch: Dispatch;
-  state$: Stream<ScopedState>;
-  initialState: ScopedState;
-};
+) => Store<S>;
