@@ -8,6 +8,7 @@ __tests__
 .prettierrc
 jest.config.js
 examples
+tools
 
 browser-tests
 examples
